@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { User } from "@/types/user";
+import { useUser } from "@/hooks/useUser";
 
 interface HeaderProfileProps {
   user?: User | null;
@@ -14,11 +15,12 @@ interface HeaderProfileProps {
 }
 
 export default function HeaderProfile({
-  user,
   signInHref = "/auth/signin",
   profileHref = "/profile",
   className = "",
 }: HeaderProfileProps) {
+  const user = useUser();
+
   if (!user) {
     return (
       <Button variant="outline" className={`text-sm ${className}`} asChild>
@@ -27,8 +29,8 @@ export default function HeaderProfile({
     );
   }
 
-  const profileImageSrc = user.profile_picture_url || user.picture;
-  const userName = user.full_name || "User";
+  const profileImageSrc = user.user?.profile_picture_url || user.user?.picture;
+  const userName = user.user?.full_name || "User";
 
   return (
     <Button
