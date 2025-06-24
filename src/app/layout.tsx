@@ -1,4 +1,4 @@
-import Header from "@/components/app-header/AppHeader";
+import AppHeader from "@/components/app-header/AppHeader";
 import "./globals.css";
 
 export default function RootLayout({
@@ -9,9 +9,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased bg-background`}>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
       // Prevent FOUC by applying theme before page renders
       (function() {
         const theme = localStorage.getItem('theme');
@@ -22,9 +22,9 @@ export default function RootLayout({
         }
       })();
     `,
-        }}
-      />
-        <Header />
+          }}
+        />
+        <AppHeader />
         {children}
       </body>
     </html>
