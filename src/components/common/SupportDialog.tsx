@@ -29,7 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { User } from "@/types/types";
+import { User } from "@/types/user";
 
 interface FormState {
   supportType: string;

@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useTheme from "@/hooks/useTheme";
-import SupportDialog from "@/components/SupportDialog";
+import SupportDialog from "@/components/common/SupportDialog";
 
 interface NavigationItem {
   href: string;

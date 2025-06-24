@@ -4,7 +4,7 @@ import { UserCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { User } from "@/types/types";
+import { User } from "@/types/user";
 
 interface HeaderProfileProps {
   user?: User | null;
