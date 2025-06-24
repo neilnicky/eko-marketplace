@@ -1,5 +1,6 @@
 import AppHeader from "@/components/app-header/AppHeader";
 import "./globals.css";
+import BottomNavBar from "@/components/bottom-nav/BottomNavBar";
 
 export default function RootLayout({
   children,
@@ -26,6 +27,7 @@ export default function RootLayout({
         />
         <AppHeader />
         {children}
+        <BottomNavBar />
       </body>
     </html>
   );

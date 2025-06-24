@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { Card, CardContent } from "../ui/card";
-import { FEATURE_ITEMS } from "@/constants/features";
+import { FEATURE_ITEMS } from "@/constants/dashboardFeatures";
 
 export default function DashboardFeatureGrid() {
   return (
