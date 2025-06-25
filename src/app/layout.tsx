@@ -27,7 +27,7 @@ export default function RootLayout({
           }}
         />
         <AppHeader />
-        {children}
+        <div className="mt-14">{children}</div>
         <BottomNavBar />
         <CreateFab />
       </body>
