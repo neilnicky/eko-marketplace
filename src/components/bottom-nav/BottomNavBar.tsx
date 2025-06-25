@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useMemo } from "react";
 import type { LucideIcon } from "lucide-react";
+import { cn, getIsActive } from "@/lib/utils";
 
 // Types for better type safety
 interface MenuItem {
@@ -34,26 +35,6 @@ const NAVIGATION_CONFIG = {
   zIndex: "z-30",
 } as const;
 
-// Utility function for determining active state
-const getIsActive = (itemPath: string, currentPath: string): boolean => {
-  // Handle home/root path specifically
-  if (itemPath === "Home" || itemPath === "/") {
-    return currentPath === "/" || currentPath === "/Home";
-  }
-
-  // For other paths, check if current path starts with item path
-  // Ensure exact matching to avoid false positives
-  const normalizedItemPath = itemPath.startsWith("/")
-    ? itemPath
-    : `/${itemPath}`;
-  const normalizedCurrentPath = currentPath || "/";
-
-  return (
-    normalizedCurrentPath === normalizedItemPath ||
-    normalizedCurrentPath.startsWith(`${normalizedItemPath}/`)
-  );
-};
-
 // Memoized Logo Navigation Item Component
 const LogoNavItem = React.memo<NavItemProps>(({ item, isActive }) => (
   <Link
@@ -62,7 +43,12 @@ const LogoNavItem = React.memo<NavItemProps>(({ item, isActive }) => (
     aria-label={`Navigate to ${item.name}`}
     prefetch={true}
   >
-    <div className="p-2 bg-card rounded-full shadow-lg border border-border group-hover:shadow-xl transition-shadow duration-200">
+    <div
+      className={cn(
+        "p-2 bg-card rounded-full shadow-lg border border-border group-hover:shadow-xl transition-shadow duration-200",
+        isActive ? "border-primary" : ""
+      )}
+    >
       <div className="relative h-12 w-12">
         <Image
           src={COMPANY_LOGO.src}
@@ -79,7 +65,7 @@ const LogoNavItem = React.memo<NavItemProps>(({ item, isActive }) => (
     <span
       className={`text-xs mt-1 truncate transition-colors duration-200 ${
         isActive
-          ? "text-primary font-medium"
+          ? "text-primary font-medium "
           : "text-muted-foreground group-hover:text-foreground"
       }`}
     >
