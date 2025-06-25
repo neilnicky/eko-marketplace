@@ -2,6 +2,8 @@ import AppHeader from "@/components/app-header/AppHeader";
 import "./globals.css";
 import BottomNavBar from "@/components/bottom-nav/BottomNavBar";
 import { CreateFab } from "@/components/common/CreateFab";
+import StoreProvider from "./StoreProvider";
+import { preventFoucScript } from "@/lib/scripts/preventFouc";
 
 export default function RootLayout({
   children,
@@ -11,25 +13,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased bg-background`}>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-      // Prevent FOUC by applying theme before page renders
-      (function() {
-        const theme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (theme === 'dark' || (!theme && prefersDark)) {
-          document.documentElement.classList.add('dark');
-        }
-      })();
-    `,
-          }}
-        />
-        <AppHeader />
-        <div className="mt-14">{children}</div>
-        <BottomNavBar />
-        <CreateFab />
+        <StoreProvider>
+          <AppHeader />
+          <div className="mt-14">{children}</div>
+          <BottomNavBar />
+          <CreateFab />
+        </StoreProvider>
+        <script dangerouslySetInnerHTML={{ __html: preventFoucScript }} />
+        {/* <Script id="prevent-fouc" strategy="beforeInteractive">
+          {preventFoucScript}
+        </Script> */}
       </body>
     </html>
   );
