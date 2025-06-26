@@ -1,4 +1,4 @@
-import Cart from "../common/Cart";
+import Cart from "./Cart";
 import HeaderOptions from "./HeaderOptions";
 import HeaderProfile from "./HeaderProfile";
 import SearchBar from "./SearchBar";
@@ -10,7 +10,7 @@ export default function AppHeader() {
       <SearchBar />
       <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
         <Cart />
-        <HeaderProfile  />
+        <HeaderProfile />
       </div>
     </header>
   );

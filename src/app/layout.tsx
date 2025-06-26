@@ -1,6 +1,6 @@
-import AppHeader from "@/components/app-header/AppHeader";
+import AppHeader from "@/components/common/AppHeader";
 import "./globals.css";
-import BottomNavBar from "@/components/bottom-nav/BottomNavBar";
+import BottomNavBar from "@/components/common/BottomNavBar";
 import { CreateFab } from "@/components/common/CreateFab";
 import StoreProvider from "./StoreProvider";
 import { preventFoucScript } from "@/lib/scripts/preventFouc";
