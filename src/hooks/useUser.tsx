@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { setUser } from "@/store/slice/auth";
+import { RootState } from "@/store/store";
 import { User } from "@/types/user";
-import { mockUser } from "@/mockData/user";
+import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "./reduxHooks";
 
 interface UseUserReturn {
   user: User | null;
@@ -12,32 +14,30 @@ interface UseUserReturn {
 }
 
 export function useUser(): UseUserReturn {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const user = useAppSelector((state: RootState) => state.auth.user);
+  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchUser = async () => {
+  const refetch = async () => {
     try {
       setLoading(true);
       setError(null);
-      //   const userData = await UserAPI.me();
-      const userData = mockUser;
-      setUser(userData);
+      const res = await fetch("/api/me");
+      if (!res.ok) throw new Error("Unauthorized");
+      const data = await res.json();
+      dispatch(setUser(data));
     } catch (err) {
-      setError(err instanceof Error ? err : new Error("Failed to fetch user"));
+      setError(err instanceof Error ? err : new Error("Unknown error"));
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
   return {
     user,
     loading,
     error,
-    refetch: fetchUser,
+    refetch,
   };
 }
