@@ -1,10 +1,9 @@
-import Marketplace from "@/components/marketplace/Marketplace";
-import React from "react";
+import MarketPage from "@/components/marketplace/MarketPage";
 
 export default function page() {
   return (
     <div>
-      <Marketplace />
+      <MarketPage />
     </div>
   );
 }

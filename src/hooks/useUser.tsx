@@ -1,10 +1,9 @@
 "use client";
 
 import { RootState } from "@/store/store";
-import { User } from "@/types/user";
 import { useAppSelector } from "./reduxHooks";
 
-export function useUser(): User | null {
+export function useUser() {
   const user = useAppSelector((state: RootState) => state.auth.user);
-  return user;
+  return { user };
 }

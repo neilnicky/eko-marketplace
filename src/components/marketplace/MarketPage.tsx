@@ -1,6 +1,5 @@
 "use client";
 
-
-export default function Marketplace() {
+export default function MarketPage() {
   return <div>Marketplace</div>;
 }
