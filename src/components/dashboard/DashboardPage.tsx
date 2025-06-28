@@ -20,7 +20,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-6 animate-in fade-in duration-500">
+    <div className="container max-w-7xl  mx-auto px-4 md:px-6 py-6 animate-in fade-in duration-500">
       <div className="space-y-8">
         {user ? (
           <>
