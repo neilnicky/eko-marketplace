@@ -2,16 +2,10 @@
 
 import { useProducts } from "@/hooks/useProducts";
 import { Product } from "@/types/product";
-import React from "react";
 import ProductCard from "./ProductCard";
-import { useRouter } from "next/navigation";
 
 export default function ProductGrid() {
   const { data: products, isLoading, error } = useProducts();
-  const router = useRouter();
-
-  const handleViewDetails = (product: Product) =>
-    router.push(`/products/${product.id}`);
 
   const handleShare = (product: Product) => {
     // Handle product sharing
@@ -21,19 +15,14 @@ export default function ProductGrid() {
   if (isLoading) {
     return <div>Loading products...</div>;
   }
-
   if (error) {
     return <div>Error loading products</div>;
   }
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
       {products?.map((product) => (
-        <ProductCard
-          key={product.id}
-          product={product}
-          onViewDetails={handleViewDetails}
-          onShare={handleShare}
-        />
+        <ProductCard key={product.id} product={product} onShare={handleShare} />
       ))}
     </div>
   );

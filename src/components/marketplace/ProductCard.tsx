@@ -14,13 +14,11 @@ import { useFavorites } from "@/hooks/useFavorites"; // Import the updated hook
 
 interface ProductCardProps {
   product: Product;
-  onViewDetails?: (product: Product) => void;
   onShare?: (product: Product) => void;
 }
 
 export default function ProductCard({
   product,
-  onViewDetails,
   onShare,
 }: ProductCardProps) {
   const dispatch = useAppDispatch();
@@ -42,19 +40,6 @@ export default function ProductCard({
 
   // Use Redux state for immediate UI feedback, API state for persistence
   const displayFavoriteStatus = isAuthenticated ? isFavorite : isReduxFavorite;
-
-  const handleCardClick = (e: React.MouseEvent) => {
-    // Prevent event propagation if click originated from interactive elements
-    if (
-      e.target instanceof Element &&
-      (e.target.closest("button") ||
-        e.target.closest("a") ||
-        e.target.closest("[data-radix-popper-content-wrapper]"))
-    )
-      return;
-
-    onViewDetails?.(product);
-  };
 
   const handleQuantityChange = (change: number) => {
     if (change > 0) {
@@ -94,13 +79,8 @@ export default function ProductCard({
     }
   };
 
-  
-
   return (
-    <Card
-      onClick={handleCardClick}
-      className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full group relative cursor-pointer"
-    >
+    <Card className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full group relative cursor-pointer">
       <ProductCardHeaderActions
         product={product}
         isAuthenticated={isAuthenticated}
@@ -110,10 +90,7 @@ export default function ProductCard({
       />
 
       <div className="flex-1 flex flex-col">
-        <ProductCardImage
-          product={product}
-          onClick={() => onViewDetails?.(product)}
-        />
+        <ProductCardImage product={product} />
 
         <CardContent className="p-4 flex-grow flex flex-col">
           <ProductInfo product={product} />

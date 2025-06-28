@@ -1,15 +1,18 @@
 import { Product } from "@/types/product";
 import { ShoppingBag } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface CardImageProps {
   product: Product;
-  onClick?: () => void;
 }
 
-export default function ProductCardImage({ product, onClick }: CardImageProps) {
+export default function ProductCardImage({ product }: CardImageProps) {
   return (
-    <div className="aspect-[4/3]  relative cursor-pointer overflow-hidden" onClick={onClick}>
+    <Link
+      href={`/products/${product.id}`}
+      className="aspect-[4/3]  relative cursor-pointer overflow-hidden"
+    >
       {product.image_urls && product.image_urls[0] ? (
         <Image
           src={product.image_urls[0]}
@@ -25,6 +28,6 @@ export default function ProductCardImage({ product, onClick }: CardImageProps) {
           <ShoppingBag className="h-16 w-16 text-gray-300" />
         </div>
       )}
-    </div>
+    </Link>
   );
 }
