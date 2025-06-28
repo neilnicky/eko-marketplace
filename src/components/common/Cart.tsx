@@ -3,6 +3,8 @@
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { useAppSelector } from "@/hooks/reduxHooks";
+import { RootState } from "@/store/store";
 
 interface CartProps {
   itemCount?: number;
@@ -10,11 +12,8 @@ interface CartProps {
   className?: string;
 }
 
-export default function Cart({
-  itemCount = 0,
-  href = "/cart",
-  className = "",
-}: CartProps) {
+export default function Cart({ href = "/cart", className = "" }: CartProps) {
+  const itemCount = useAppSelector((state: RootState) => state.cart.totalItems);
   return (
     <Button
       variant="ghost"
