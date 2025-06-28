@@ -1,7 +1,8 @@
 import { Product } from "@/types/product";
-import ShareOptions from "./ShareOptions";
-import { Button } from "../ui/button";
 import { Star } from "lucide-react";
+import { Button } from "../ui/button";
+import ShareOptions from "./ShareOptions";
+import { cn } from "@/lib/utils";
 
 interface CardHeaderActionsProps {
   product: Product;
@@ -62,9 +63,10 @@ export default function ProductCardHeaderActions({
         disabled={!isAuthenticated}
       >
         <Star
-          className={`h-4 w-4 ${
+          className={cn(
+            "h-4 w-4",
             isFavorite ? "fill-current text-yellow-500" : "text-gray-400"
-          }`}
+          )}
         />
       </Button>
     </div>
