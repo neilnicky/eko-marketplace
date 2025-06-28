@@ -3,6 +3,7 @@ import { addToCart, removeFromCart } from "@/store/slices/cart";
 import { toggleFavorite } from "@/store/slices/favorites";
 import { RootState } from "@/store/store";
 import { Product } from "@/types/product";
+import { useToggleFavorite } from "@/hooks/useFavorites";
 import React from "react";
 import { Card, CardContent } from "../ui/card";
 import ProductCardHeaderActions from "./ProductCardHeaderActions";
@@ -16,21 +17,18 @@ interface ProductCardProps {
   onViewDetails?: (product: Product) => void;
   onShare?: (product: Product) => void;
 }
+
 export default function ProductCard({
   product,
   onViewDetails,
   onShare,
 }: ProductCardProps) {
+
   const dispatch = useAppDispatch();
-  const cartQuantity = useAppSelector(
-    (state: RootState) => state.cart.items[product.id] || 0
-  );
-  const isFavorite = useAppSelector((state: RootState) =>
-    state.favorites.items.includes(product.id)
-  );
-  const isAuthenticated = useAppSelector(
-    (state: RootState) => state.auth.isLoggedIn
-  );
+  const cartQuantity = useAppSelector((state: RootState) => state.cart.items[product.id] || 0);
+  const isFavorite = useAppSelector((state: RootState) => state.favorites.items.includes(product.id));
+  const isAuthenticated = useAppSelector((state: RootState) => state.auth.isLoggedIn);
+  const { toggleFavorite: toggleFavoriteDb } = useToggleFavorite();
 
   const handleCardClick = (e: React.MouseEvent) => {
     // Prevent event propagation if click originated from interactive elements
@@ -68,9 +66,14 @@ export default function ProductCard({
       );
     }
   };
+
   const handleToggleFavorite = () => {
     if (isAuthenticated) {
+      // Update local state immediately for better UX
       dispatch(toggleFavorite(product.id));
+
+      // Sync with database using optimistic updates
+      toggleFavoriteDb(product.id, isFavorite);
     }
   };
 
