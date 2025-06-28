@@ -49,7 +49,7 @@ export const FEATURE_ITEMS: FeatureItem[] = [
     icon: Bell,
   },
   {
-    title: "Basket",
+    title: "Cart",
     href: "/cart",
     desc: "Your cart products",
     icon: ShoppingCart,

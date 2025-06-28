@@ -1,10 +1,10 @@
 "use client";
 
-import { ShoppingBag } from "lucide-react";
-import Link from "next/link";
-import { Button } from "../ui/button";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
+import { ShoppingCart } from "lucide-react";
+import Link from "next/link";
+import { Button } from "../ui/button";
 
 interface CartProps {
   itemCount?: number;
@@ -22,7 +22,7 @@ export default function Cart({ href = "/cart", className = "" }: CartProps) {
       asChild
     >
       <Link href={href} aria-label={`Shopping cart with ${itemCount} items`}>
-        <ShoppingBag className="h-6 w-6 text-foreground" aria-hidden="true" />
+        <ShoppingCart className="h-6 w-6 text-foreground" aria-hidden="true" />
         {itemCount > 0 && (
           <span
             className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium min-w-[1.25rem]"
