@@ -7,7 +7,6 @@ export default function MarketPage() {
       {/*TODO: <Toaster /> */}
       <div className="max-w-7xl mx-auto p-4">
         {/* TODO: showCepModal ? <CEPModal/> */}
-        {/* TODO: sharingProducts && showQrModal ? <QRModal/> */}
 
         <MarketplaceHeader />
 

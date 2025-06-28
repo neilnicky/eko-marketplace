@@ -17,10 +17,7 @@ interface ProductCardProps {
   onShare?: (product: Product) => void;
 }
 
-export default function ProductCard({
-  product,
-  onShare,
-}: ProductCardProps) {
+export default function ProductCard({ product, onShare }: ProductCardProps) {
   const dispatch = useAppDispatch();
   const cartQuantity = useAppSelector(
     (state: RootState) => state.cart.items[product.id] || 0
@@ -38,7 +35,6 @@ export default function ProductCard({
     isAuthenticated // Only fetch when authenticated
   );
 
-  // Use Redux state for immediate UI feedback, API state for persistence
   const displayFavoriteStatus = isAuthenticated ? isFavorite : isReduxFavorite;
 
   const handleQuantityChange = (change: number) => {
