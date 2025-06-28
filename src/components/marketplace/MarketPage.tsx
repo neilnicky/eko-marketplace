@@ -1,12 +1,11 @@
-"use client";
-
 import MarketplaceHeader from "./MarketplaceHeader";
+import ProductGrid from "./ProductGrid";
 
 export default function MarketPage() {
   return (
     <>
-      {/* TODO: Toaster */}
-      <div className="max-w-7xl mx-auto py-4">
+      {/*TODO: <Toaster /> */}
+      <div className="max-w-7xl mx-auto p-4">
         {/* TODO: showCepModal ? <CEPModal/> */}
         {/* TODO: sharingProducts && showQrModal ? <QRModal/> */}
 
@@ -16,7 +15,7 @@ export default function MarketPage() {
           {/* TODO: <SetLocation/> */}
           {/* TODO: <CategoriesSection/> */}
           {/* TODO: <SortSelector/> */}
-          {/* TODO: <ProductGrid/> */}
+          <ProductGrid />
         </div>
 
         {/* <CartFooter /> */}
