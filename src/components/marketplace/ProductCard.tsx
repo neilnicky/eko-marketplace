@@ -3,7 +3,6 @@ import { addToCart, removeFromCart } from "@/store/slices/cart";
 import { toggleFavorite } from "@/store/slices/favorites";
 import { RootState } from "@/store/store";
 import { Product } from "@/types/product";
-import { useToggleFavorite } from "@/hooks/useFavorites";
 import React from "react";
 import { Card, CardContent } from "../ui/card";
 import ProductCardHeaderActions from "./ProductCardHeaderActions";
@@ -11,6 +10,7 @@ import ProductCardImage from "./ProductCardImage";
 import ProductInfo from "./ProductInfo";
 import ProductPriceDisplay from "./ProductPriceDisplay";
 import CartControls from "./CartControls";
+import { useFavorites } from "@/hooks/useFavorites"; // Import the updated hook
 
 interface ProductCardProps {
   product: Product;
@@ -23,12 +23,25 @@ export default function ProductCard({
   onViewDetails,
   onShare,
 }: ProductCardProps) {
-
   const dispatch = useAppDispatch();
-  const cartQuantity = useAppSelector((state: RootState) => state.cart.items[product.id] || 0);
-  const isFavorite = useAppSelector((state: RootState) => state.favorites.items.includes(product.id));
-  const isAuthenticated = useAppSelector((state: RootState) => state.auth.isLoggedIn);
-  const { toggleFavorite: toggleFavoriteDb } = useToggleFavorite();
+  const cartQuantity = useAppSelector(
+    (state: RootState) => state.cart.items[product.id] || 0
+  );
+
+  const isReduxFavorite = useAppSelector((state: RootState) =>
+    state.favorites.items.includes(product.id)
+  );
+  const isAuthenticated = useAppSelector(
+    (state: RootState) => state.auth.isLoggedIn
+  );
+
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites(
+    product.id,
+    isAuthenticated // Only fetch when authenticated
+  );
+
+  // Use Redux state for immediate UI feedback, API state for persistence
+  const displayFavoriteStatus = isAuthenticated ? isFavorite : isReduxFavorite;
 
   const handleCardClick = (e: React.MouseEvent) => {
     // Prevent event propagation if click originated from interactive elements
@@ -68,14 +81,20 @@ export default function ProductCard({
   };
 
   const handleToggleFavorite = () => {
-    if (isAuthenticated) {
-      // Update local state immediately for better UX
-      dispatch(toggleFavorite(product.id));
+    // Update Redux state immediately for better UX
+    dispatch(toggleFavorite(product.id));
 
-      // Sync with database using optimistic updates
-      toggleFavoriteDb(product.id, isFavorite);
+    if (isAuthenticated) {
+      // Sync with database using the mutations from useFavorites
+      if (isFavorite) {
+        removeFavorite.mutate(product.id);
+      } else {
+        addFavorite.mutate(product.id);
+      }
     }
   };
+
+  
 
   return (
     <Card
@@ -84,8 +103,8 @@ export default function ProductCard({
     >
       <ProductCardHeaderActions
         product={product}
-        isFavorite={isFavorite}
         isAuthenticated={isAuthenticated}
+        isFavorite={displayFavoriteStatus}
         onToggleFavorite={handleToggleFavorite}
         onShare={() => onShare?.(product)}
       />
