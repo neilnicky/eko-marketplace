@@ -3,6 +3,8 @@ import { Star } from "lucide-react";
 import { Button } from "../ui/button";
 import ShareOptions from "./ShareOptions";
 import { cn } from "@/lib/utils";
+import QrModal from "./QrModal";
+import { useState } from "react";
 
 interface CardHeaderActionsProps {
   product: Product;
@@ -17,18 +19,26 @@ export default function ProductCardHeaderActions({
   isFavorite,
   isAuthenticated,
   onToggleFavorite,
-  onShare,
 }: CardHeaderActionsProps) {
+  const [showQrModal, setShowQrModal] = useState(false);
+
   const shareUrl = `${
     typeof window !== "undefined" ? window.location.origin : ""
-  }/marketplace?product=${product.id}`;
+  }/product/${product.id}`;
 
   return (
     <div className="absolute top-2 left-2 right-2 z-10 flex items-center justify-between">
+      <QrModal
+        isOpen={showQrModal}
+        onClose={() => setShowQrModal(false)}
+        title={product.name}
+        url={shareUrl}
+      />
+
       <ShareOptions
         url={shareUrl}
         title={product.name}
-        onQrCodeClick={onShare}
+        onQrCodeClick={() => setShowQrModal(true)}
         trigger={
           <Button
             variant="ghost"
