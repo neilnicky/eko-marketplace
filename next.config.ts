@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
       {
         hostname: "images.pexels.com",
       },
+      {
+        hostname: "api.qrserver.com",
+      },
     ],
   },
 };
