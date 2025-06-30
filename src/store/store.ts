@@ -3,6 +3,7 @@ import authReducer from "./slices/auth";
 import productReducer from "./slices/product";
 import cartReducer from "./slices/cart";
 import favoritesReducer from "./slices/favorites";
+import filtersReducer from "./slices/filters";
 
 export const makeStore = () => {
   return configureStore({
@@ -11,6 +12,7 @@ export const makeStore = () => {
       product: productReducer,
       cart: cartReducer,
       favorites: favoritesReducer,
+      filters: filtersReducer,
     },
   });
 };
