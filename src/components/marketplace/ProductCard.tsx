@@ -10,14 +10,13 @@ import ProductCardImage from "./ProductCardImage";
 import ProductInfo from "./ProductInfo";
 import ProductPriceDisplay from "./ProductPriceDisplay";
 import CartControls from "./CartControls";
-import { useFavorites } from "@/hooks/useFavorites"; // Import the updated hook
+import { useFavorites } from "@/hooks/useFavorites";
 
 interface ProductCardProps {
   product: Product;
-  onShare?: (product: Product) => void;
 }
 
-export default function ProductCard({ product, onShare }: ProductCardProps) {
+export default function ProductCard({ product }: ProductCardProps) {
   const dispatch = useAppDispatch();
   const cartQuantity = useAppSelector(
     (state: RootState) => state.cart.items[product.id] || 0
@@ -39,7 +38,6 @@ export default function ProductCard({ product, onShare }: ProductCardProps) {
 
   const handleQuantityChange = (change: number) => {
     if (change > 0) {
-      // Check stock limits
       if (product.stock !== undefined && cartQuantity >= product.stock) {
         return;
       }
@@ -82,7 +80,6 @@ export default function ProductCard({ product, onShare }: ProductCardProps) {
         isAuthenticated={isAuthenticated}
         isFavorite={displayFavoriteStatus}
         onToggleFavorite={handleToggleFavorite}
-        onShare={() => onShare?.(product)}
       />
 
       <div className="flex-1 flex flex-col">

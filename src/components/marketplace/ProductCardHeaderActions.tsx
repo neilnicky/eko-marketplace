@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 import { Button } from "../ui/button";
 import ShareOptions from "./ShareOptions";
 import { cn } from "@/lib/utils";
-import QrModal from "./QrModal";
+import QrModal from "./QRModal";
 import { useState } from "react";
 
 interface CardHeaderActionsProps {
