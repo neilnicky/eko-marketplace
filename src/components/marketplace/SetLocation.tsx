@@ -1,22 +1,17 @@
 "use client";
 
-import { useAppSelector } from "@/hooks/reduxHooks";
-import { selectLocation } from "@/store/slices/filters";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import CepLookupModal from "./CepLookupModal";
+import { useUserLocation } from "@/hooks/useUserLocation";
 
 export default function SetLocation() {
   const [showCepModal, setShowCepModal] = useState(false);
-  const currentLocation = useAppSelector(selectLocation);
+  const { location, locationString } = useUserLocation();
 
   return (
     <div>
-      <CepLookupModal
-        isOpen={showCepModal}
-        onClose={() => setShowCepModal(false)}
-      />
       <div className="px-2 sm:px-4">
         <Button
           variant="outline"
@@ -24,11 +19,13 @@ export default function SetLocation() {
           className="mb-2"
         >
           <MapPin className="h-4 w-4 mr-2" />
-          {currentLocation?.city
-            ? `${currentLocation.city}, ${currentLocation.state}`
-            : "Set Location"}
+          {location?.city ? locationString : "Set Location"}
         </Button>
       </div>
+      <CepLookupModal
+        isOpen={showCepModal}
+        onClose={() => setShowCepModal(false)}
+      />
     </div>
   );
 }
