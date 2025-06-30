@@ -1,4 +1,11 @@
+"use client";
+
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { selectLocation, setLocation } from "@/store/slices/filters";
+import { AlertTriangle, CheckCircle, Loader2 } from "lucide-react";
 import React, { useCallback, useState, useTransition } from "react";
+import { Alert, AlertDescription } from "../ui/alert";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,11 +14,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { AlertTriangle, CheckCircle, Loader2 } from "lucide-react";
-import { Alert, AlertDescription } from "../ui/alert";
+import { Label } from "../ui/label";
 
 // Types
 interface Location {
@@ -21,7 +25,7 @@ interface Location {
 }
 
 interface CepResponse {
-  erro?: boolean;
+  erro?: boolean; // Note: ViaCEP API uses 'erro' not 'error'
   localidade: string;
   uf: string;
   logradouro: string;
@@ -30,7 +34,7 @@ interface CepResponse {
 interface CepLookupModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLocationSet: (location: Location) => void;
+  onLocationSet?: (location: Location) => void; // Optional callback for additional actions
 }
 
 // Custom hook for CEP formatting and validation
@@ -72,7 +76,7 @@ function useCepInput() {
 
 // Custom hook for CEP lookup logic
 function useCepLookup() {
-  const [location, setLocation] = useState<Location | null>(null);
+  const [lookupLocation, setLookupLocation] = useState<Location | null>(null);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
 
@@ -84,7 +88,7 @@ function useCepLookup() {
 
     startTransition(async () => {
       setError("");
-      setLocation(null);
+      setLookupLocation(null);
 
       try {
         const response = await fetch(
@@ -99,42 +103,49 @@ function useCepLookup() {
 
         if (data.erro) {
           setError("CEP not found. Please check the number.");
-          setLocation(null);
+          setLookupLocation(null);
         } else {
-          setLocation({
+          const location: Location = {
             city: data.localidade,
             state: data.uf,
             address: data.logradouro,
-          });
+          };
+          setLookupLocation(location);
         }
       } catch (err) {
         console.error("CEP lookup failed:", err);
         setError("Failed to fetch location. Please try again.");
+        setLookupLocation(null);
       }
     });
   }, []);
 
   const resetLookup = useCallback(() => {
-    setLocation(null);
+    setLookupLocation(null);
     setError("");
   }, []);
 
   return {
-    location,
+    lookupLocation,
     error,
     isPending,
     lookupCep,
     resetLookup,
   };
 }
+
 export default function CepLookupModal({
   isOpen,
   onClose,
   onLocationSet,
 }: CepLookupModalProps) {
+  const dispatch = useAppDispatch();
+  const currentLocation = useAppSelector(selectLocation);
+
   const { cep, cleanCep, handleCepChange, isValidCep, resetCep } =
     useCepInput();
-  const { location, error, isPending, lookupCep, resetLookup } = useCepLookup();
+  const { lookupLocation, error, isPending, lookupCep, resetLookup } =
+    useCepLookup();
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,14 +170,19 @@ export default function CepLookupModal({
   }, [isValidCep, cleanCep, lookupCep]);
 
   const handleConfirm = useCallback(() => {
-    if (location) {
-      onLocationSet(location);
+    if (lookupLocation) {
+      // Update Redux store
+      dispatch(setLocation(lookupLocation));
+
+      // Call optional callback for additional actions
+      onLocationSet?.(lookupLocation);
+
       handleClose();
     }
-  }, [location, onLocationSet]);
+  }, [lookupLocation, dispatch, onLocationSet]);
 
   const handleClose = useCallback(() => {
-    // Reset all state on close
+    // Reset local state on close
     resetCep();
     resetLookup();
     onClose();
@@ -181,6 +197,9 @@ export default function CepLookupModal({
     [isValidCep, isPending, handleManualLookup]
   );
 
+  // Show current location if available
+  const displayLocation = lookupLocation || currentLocation;
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
@@ -188,6 +207,11 @@ export default function CepLookupModal({
           <DialogTitle>Set Your Location</DialogTitle>
           <DialogDescription>
             Enter your ZIP code (CEP) to find products available in your region.
+            {currentLocation && (
+              <span className="block mt-2 text-sm text-muted-foreground">
+                Current: {currentLocation.city}, {currentLocation.state}
+              </span>
+            )}
           </DialogDescription>
         </DialogHeader>
 
@@ -226,14 +250,15 @@ export default function CepLookupModal({
             </Alert>
           )}
 
-          {location && (
+          {displayLocation && (
             <Alert className="border-green-200 bg-green-50">
               <CheckCircle className="h-4 w-4 text-green-600" />
               <AlertDescription className="text-green-800">
-                Location found: {location.city}, {location.state}
-                {location.address && (
+                {lookupLocation ? "New location found" : "Current location"}:{" "}
+                {displayLocation.city}, {displayLocation.state}
+                {displayLocation.address && (
                   <div className="text-sm text-green-700 mt-1">
-                    {location.address}
+                    {displayLocation.address}
                   </div>
                 )}
               </AlertDescription>
@@ -245,8 +270,13 @@ export default function CepLookupModal({
           <Button variant="outline" onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleConfirm} disabled={!location || isPending}>
-            Confirm Location
+          <Button
+            onClick={handleConfirm}
+            disabled={!lookupLocation || isPending}
+          >
+            {lookupLocation && currentLocation
+              ? "Update Location"
+              : "Confirm Location"}
           </Button>
         </DialogFooter>
       </DialogContent>
