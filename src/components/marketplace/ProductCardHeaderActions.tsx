@@ -12,13 +12,15 @@ interface CardHeaderActionsProps {
   isAuthenticated: boolean;
   onToggleFavorite: () => void;
   onShare?: () => void;
+  isToggling?: boolean;
 }
 
 export default function ProductCardHeaderActions({
   product,
   isFavorite,
-  // isAuthenticated,
+  // isAuthenticated
   onToggleFavorite,
+  isToggling = false,
 }: CardHeaderActionsProps) {
   const [showQrModal, setShowQrModal] = useState(false);
 
@@ -62,22 +64,32 @@ export default function ProductCardHeaderActions({
           </Button>
         }
       />
+
       <Button
         variant="ghost"
         size="icon"
-        className="w-8 h-8 bg-white/80 hover:bg-white/90 rounded-full shadow-sm"
+        className={cn(
+          "w-8 h-8 bg-white/80 hover:bg-white/90 rounded-full shadow-sm",
+          isToggling && "opacity-50 cursor-not-allowed"
+        )}
         onClick={(e) => {
           e.stopPropagation();
-          onToggleFavorite();
+          if (!isToggling) {
+            onToggleFavorite();
+          }
         }}
-        // disabled={!isAuthenticated}
+        disabled={isToggling}
       >
-        <Star
-          className={cn(
-            "h-4 w-4",
-            isFavorite ? "fill-current text-yellow-500" : "text-gray-400"
-          )}
-        />
+        {isToggling ? (
+          <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <Star
+            className={cn(
+              "h-4 w-4",
+              isFavorite ? "fill-current text-yellow-500" : "text-gray-400"
+            )}
+          />
+        )}
       </Button>
     </div>
   );

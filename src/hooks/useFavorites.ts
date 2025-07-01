@@ -23,11 +23,12 @@ export const useFavorites = (enabled: boolean = true) => {
       await queryClient.cancelQueries({ queryKey: ["favorites"] });
 
       const prev = queryClient.getQueryData<string[]>(["favorites"]);
-      queryClient.setQueryData<string[]>(["favorites"], (old = []) =>
-        action === "add"
-          ? [...old, productId]
-          : old.filter((id) => id !== productId)
-      );
+      queryClient.setQueryData<string[]>(["favorites"], (old = []) => {
+        if (action === "add") {
+          return old.includes(productId) ? old : [...old, productId];
+        }
+        return old.filter((id) => id !== productId);
+      });
 
       return { prev };
     },
@@ -35,6 +36,7 @@ export const useFavorites = (enabled: boolean = true) => {
       if (ctx?.prev) {
         queryClient.setQueryData(["favorites"], ctx.prev);
       }
+      console.error("Failed to toggle favorite:", _err);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
@@ -50,10 +52,11 @@ export const useFavorites = (enabled: boolean = true) => {
     favorites: favoritesQuery.data,
     isLoading: favoritesQuery.isLoading,
     error: favoritesQuery.error,
+    isToggling: toggleFavorite.isPending,
   };
 };
 
-// API
+
 async function fetchUserFavorites(): Promise<string[]> {
   const res = await fetch("/api/favorites");
   if (!res.ok) throw new Error("Failed to fetch favorites");
@@ -68,15 +71,14 @@ async function toggleFavoriteInDb({
   productId: string;
   action: "add" | "remove";
 }) {
-  const url =
-    action === "add" ? "/api/favorites" : `/api/favorites/${productId}`;
+  const url = action === "add" ? "/api/favorites" : `/api/favorites/${productId}`;
   const method = action === "add" ? "POST" : "DELETE";
 
   const res = await fetch(url, {
     method,
     headers: { "Content-Type": "application/json" },
-    body: action === "add" ? JSON.stringify({ productId }) : undefined,
+    ...(action === "add" && { body: JSON.stringify({ productId }) }),
   });
 
-  if (!res.ok) throw new Error("Failed to toggle favorite");
+  if (!res.ok) throw new Error(`Failed to ${action} favorite`);
 }

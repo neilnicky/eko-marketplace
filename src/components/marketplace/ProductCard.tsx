@@ -15,6 +15,7 @@ interface ProductCardProps {
   isAuthenticated: boolean;
   isFavorite: boolean;
   onToggleFavorite: () => void;
+  isToggling?: boolean;
 }
 
 export default function ProductCard({
@@ -22,6 +23,7 @@ export default function ProductCard({
   isAuthenticated,
   isFavorite,
   onToggleFavorite,
+  isToggling = false,
 }: ProductCardProps) {
   const dispatch = useAppDispatch();
   const cartQuantity = useAppSelector(
@@ -35,10 +37,15 @@ export default function ProductCard({
   const handleQuantityChange = useCartQuantityHandler(product, cartQuantity);
 
   const handleToggleFavorite = () => {
-    // Update Redux state immediately for better UX
-    dispatch(toggleFavoriteRedux(product.id));
+    // For non-authenticated users, only update Redux
+    if (!isAuthenticated) {
+      dispatch(toggleFavoriteRedux(product.id));
+      return;
+    }
 
-    if (isAuthenticated) onToggleFavorite();
+    // For authenticated users: optimistic Redux update + server sync
+    dispatch(toggleFavoriteRedux(product.id));
+    onToggleFavorite();
   };
 
   return (
@@ -48,6 +55,7 @@ export default function ProductCard({
         isAuthenticated={isAuthenticated}
         isFavorite={displayFavoriteStatus}
         onToggleFavorite={handleToggleFavorite}
+        isToggling={isToggling}
       />
 
       <div className="flex-1 flex flex-col">
