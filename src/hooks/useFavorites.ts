@@ -1,129 +1,82 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
 
-// Types
-interface FavoriteItem {
-  id: string;
-  productId: string;
-  userId: string;
-  createdAt: string;
-}
-
-export const useFavorites = (productId?: string, enabled: boolean = true) => {
+export const useFavorites = (enabled: boolean = true) => {
   const queryClient = useQueryClient();
 
-  // Query to fetch all favorites
   const favoritesQuery = useQuery({
     queryKey: ["favorites"],
     queryFn: fetchUserFavorites,
     enabled,
-    staleTime: 5 * 60 * 1000, // 5m
-    gcTime: 10 * 60 * 1000, // 10m
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
-  // Mutation to add favorite
-  const addFavoriteMutation = useMutation({
-    mutationFn: addFavoriteToDb,
-    onMutate: async (productId: string) => {
+  const toggleFavorite = useMutation({
+    mutationFn: toggleFavoriteInDb,
+    onMutate: async ({
+      productId,
+      action,
+    }: {
+      productId: string;
+      action: "add" | "remove";
+    }) => {
       await queryClient.cancelQueries({ queryKey: ["favorites"] });
 
-      const previousFavorites = queryClient.getQueryData<string[]>([
-        "favorites",
-      ]);
-
-      queryClient.setQueryData<string[]>(["favorites"], (old) =>
-        old ? [...old, productId] : [productId]
+      const prev = queryClient.getQueryData<string[]>(["favorites"]);
+      queryClient.setQueryData<string[]>(["favorites"], (old = []) =>
+        action === "add"
+          ? [...old, productId]
+          : old.filter((id) => id !== productId)
       );
 
-      return { previousFavorites };
+      return { prev };
     },
-    onError: (error, productId, context) => {
-      if (context?.previousFavorites) {
-        queryClient.setQueryData(["favorites"], context.previousFavorites);
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) {
+        queryClient.setQueryData(["favorites"], ctx.prev);
       }
-      console.error("Failed to add favorite:", error);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
     },
   });
 
-  // Mutation to remove favorite
-  const removeFavoriteMutation = useMutation({
-    mutationFn: removeFavoriteFromDb,
-    onMutate: async (productId: string) => {
-      await queryClient.cancelQueries({ queryKey: ["favorites"] });
-
-      const previousFavorites = queryClient.getQueryData<string[]>([
-        "favorites",
-      ]);
-
-      queryClient.setQueryData<string[]>(["favorites"], (old) =>
-        old ? old.filter((id) => id !== productId) : []
-      );
-
-      return { previousFavorites };
-    },
-    onError: (error, productId, context) => {
-      if (context?.previousFavorites) {
-        queryClient.setQueryData(["favorites"], context.previousFavorites);
-      }
-      console.error("Failed to remove favorite:", error);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["favorites"] });
-    },
-  });
-
-  // Get favorite status for specific product
-  const isFavorite = useMemo(() => {
-    return productId
-      ? favoritesQuery.data?.includes(productId) ?? false
-      : false;
-  }, [favoritesQuery.data, productId]);
+  const isFavorite = (productId: string): boolean =>
+    favoritesQuery.data?.includes(productId) ?? false;
 
   return {
-    addFavorite: addFavoriteMutation,
-    removeFavorite: removeFavoriteMutation,
     isFavorite,
+    toggleFavorite,
     favorites: favoritesQuery.data,
     isLoading: favoritesQuery.isLoading,
     error: favoritesQuery.error,
   };
 };
 
-// API functions
-const fetchUserFavorites = async (): Promise<string[]> => {
-  const response = await fetch("/api/favorites");
+// API
+async function fetchUserFavorites(): Promise<string[]> {
+  const res = await fetch("/api/favorites");
+  if (!res.ok) throw new Error("Failed to fetch favorites");
+  const data = await res.json();
+  return data.map((f: any) => f.productId);
+}
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch favorites");
-  }
+async function toggleFavoriteInDb({
+  productId,
+  action,
+}: {
+  productId: string;
+  action: "add" | "remove";
+}) {
+  const url =
+    action === "add" ? "/api/favorites" : `/api/favorites/${productId}`;
+  const method = action === "add" ? "POST" : "DELETE";
 
-  const favorites: FavoriteItem[] = await response.json();
-  return favorites.map((fav) => fav.productId);
-};
-
-const addFavoriteToDb = async (productId: string): Promise<void> => {
-  const response = await fetch("/api/favorites", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ productId }),
+  const res = await fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: action === "add" ? JSON.stringify({ productId }) : undefined,
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to add favorite");
-  }
-};
-
-const removeFavoriteFromDb = async (productId: string): Promise<void> => {
-  const response = await fetch(`/api/favorites/${productId}`, {
-    method: "DELETE",
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to remove favorite");
-  }
-};
+  if (!res.ok) throw new Error("Failed to toggle favorite");
+}

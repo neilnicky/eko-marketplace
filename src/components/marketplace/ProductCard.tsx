@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { useCartQuantityHandler } from "@/hooks/useCartQuantityHandler";
-import { useFavorites } from "@/hooks/useFavorites";
-import { toggleFavorite } from "@/store/slices/favorites";
+import { toggleFavoriteRedux } from "@/store/slices/favorites";
 import { RootState } from "@/store/store";
 import { Product } from "@/types/product";
 import CartControls from "../cart/CartControls";
@@ -13,42 +12,33 @@ import ProductPriceDisplay from "./ProductCardPrice";
 
 interface ProductCardProps {
   product: Product;
+  isAuthenticated: boolean;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  isAuthenticated,
+  isFavorite,
+  onToggleFavorite,
+}: ProductCardProps) {
   const dispatch = useAppDispatch();
   const cartQuantity = useAppSelector(
     (state: RootState) => state.cart.items[product.id]?.quantity || 0
   );
-
   const isReduxFavorite = useAppSelector((state: RootState) =>
     state.favorites.items.includes(product.id)
   );
-  const isAuthenticated = useAppSelector(
-    (state: RootState) => state.auth.isLoggedIn
-  );
-
-  const { addFavorite, removeFavorite, isFavorite } = useFavorites(
-    product.id,
-    isAuthenticated // Only fetch when authenticated
-  );
-
   const displayFavoriteStatus = isAuthenticated ? isFavorite : isReduxFavorite;
 
   const handleQuantityChange = useCartQuantityHandler(product, cartQuantity);
 
   const handleToggleFavorite = () => {
     // Update Redux state immediately for better UX
-    dispatch(toggleFavorite(product.id));
+    dispatch(toggleFavoriteRedux(product.id));
 
-    if (isAuthenticated) {
-      // Sync with database using the mutations from useFavorites
-      if (isFavorite) {
-        removeFavorite.mutate(product.id);
-      } else {
-        addFavorite.mutate(product.id);
-      }
-    }
+    if (isAuthenticated) onToggleFavorite();
   };
 
   return (
