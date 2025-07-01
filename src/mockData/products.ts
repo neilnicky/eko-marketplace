@@ -10,7 +10,7 @@ export const mockProducts = [
       "https://images.pexels.com/photos/2966150/pexels-photo-2966150.jpeg",
     ],
     description: "Fresh organic apples from local farms",
-    category: "fruits",
+    category: "processed",
     tags: ["organic", "fresh", "local"],
   },
   {
@@ -24,7 +24,7 @@ export const mockProducts = [
       "https://images.pexels.com/photos/6824475/pexels-photo-6824475.jpeg",
     ],
     description: "Freshly baked whole wheat bread with no preservatives",
-    category: "bakery",
+    category: "fresh",
     tags: ["whole wheat", "fresh", "healthy"],
   },
   {
@@ -38,7 +38,7 @@ export const mockProducts = [
       "https://images.pexels.com/photos/4911785/pexels-photo-4911785.jpeg",
     ],
     description: "Farm fresh free-range eggs",
-    category: "dairy",
+    category: "fresh",
     tags: ["free-range", "protein", "organic"],
   },
   {
@@ -52,7 +52,7 @@ export const mockProducts = [
       "https://images.pexels.com/photos/3658482/pexels-photo-3658482.jpeg",
     ],
     description: "Unsweetened almond milk, lactose-free and vegan",
-    category: "beverages",
+    category: "inputs",
     tags: ["vegan", "dairy-free", "healthy"],
   },
   {
@@ -66,7 +66,7 @@ export const mockProducts = [
       "https://images.pexels.com/photos/673673/pexels-photo-673673.jpeg",
     ],
     description: "Juicy red tomatoes perfect for cooking and salads",
-    category: "vegetables",
+    category: "fresh",
     tags: ["fresh", "local", "seasonal"],
   },
 ];

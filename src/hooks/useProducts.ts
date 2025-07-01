@@ -23,7 +23,7 @@ export const useProduct = (productId: string) => {
 
 // Mock API function
 const fetchProducts = async (): Promise<Product[]> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 500));
 
   return mockProducts;
 };

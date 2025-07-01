@@ -12,7 +12,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   return (
     <div className="flex-1 mb-2">
       <Link
-        href={`/products/${product.id}`}
+        href={`/product/${product.id}`}
         className="text-sm font-semibold text-gray-800 line-clamp-2 leading-tight h-10 mb-1"
       >
         {product.name}

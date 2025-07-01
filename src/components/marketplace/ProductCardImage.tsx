@@ -10,7 +10,7 @@ interface CardImageProps {
 export default function ProductCardImage({ product }: CardImageProps) {
   return (
     <Link
-      href={`/products/${product.id}`}
+      href={`/product/${product.id}`}
       className="aspect-[4/3]  relative cursor-pointer overflow-hidden"
     >
       {product.image_urls && product.image_urls[0] ? (

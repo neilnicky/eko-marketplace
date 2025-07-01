@@ -19,7 +19,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const dispatch = useAppDispatch();
   const cartQuantity = useAppSelector(
-    (state: RootState) => state.cart.items[product.id] || 0
+    (state: RootState) => state.cart.items[product.id]?.quantity || 0
   );
 
   const isReduxFavorite = useAppSelector((state: RootState) =>
@@ -53,7 +53,6 @@ export default function ProductCard({ product }: ProductCardProps) {
         removeFromCart({
           productId: product.id,
           quantity: Math.abs(change),
-          price: product.price,
         })
       );
     }
