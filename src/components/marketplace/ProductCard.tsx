@@ -8,8 +8,8 @@ import { Card, CardContent } from "../ui/card";
 import CartControls from "./CartControls";
 import ProductCardHeaderActions from "./ProductCardHeaderActions";
 import ProductCardImage from "./ProductCardImage";
-import ProductInfo from "./ProductInfo";
-import ProductPriceDisplay from "./ProductPriceDisplay";
+import ProductInfo from "./ProductCardInfo";
+import ProductPriceDisplay from "./ProductCardPrice";
 
 interface ProductCardProps {
   product: Product;
