@@ -10,12 +10,14 @@ import ProductCardHeaderActions from "./ProductCardHeaderActions";
 import ProductCardImage from "./ProductCardImage";
 import ProductInfo from "./ProductCardInfo";
 import ProductPriceDisplay from "./ProductCardPrice";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const { toast } = useToast();
   const dispatch = useAppDispatch();
   const cartQuantity = useAppSelector(
     (state: RootState) => state.cart.items[product.id]?.quantity || 0
@@ -44,9 +46,37 @@ export default function ProductCard({ product }: ProductCardProps) {
     if (isAuthenticated) {
       // Sync with database using the mutations from useFavorites
       if (isFavorite) {
-        removeFavorite.mutate(product.id);
+        removeFavorite.mutate(product.id, {
+          onError: (error) => {
+            dispatch(toggleFavorite(product.id)); // rollback
+            toast({
+              title: "Error",
+              description: error.message,
+              variant: "destructive",
+            });
+          },
+          onSuccess: () => {
+            toast({
+              title: "Removed from favorites",
+            });
+          },
+        });
       } else {
-        addFavorite.mutate(product.id);
+        addFavorite.mutate(product.id, {
+          onError: (error) => {
+            dispatch(toggleFavorite(product.id)); // rollback
+            toast({
+              title: "Error",
+              description: error.message,
+              variant: "destructive",
+            });
+          },
+          onSuccess: () => {
+            toast({
+              title: "Added to favorites",
+            });
+          },
+        });
       }
     }
   };

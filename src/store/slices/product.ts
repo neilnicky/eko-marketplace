@@ -1,16 +1,24 @@
-import { mockProducts } from "@/mockData/products";
-import { createSlice } from "@reduxjs/toolkit";
+import { Product } from "@/types/product";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
-  items: mockProducts,
+interface ProductState {
+  items: Product[];
+}
+
+const initialState: ProductState = {
+  items: [],
 };
 
 const productSlice = createSlice({
   name: "product",
   initialState,
-  reducers: {},
+  reducers: {
+    setProducts(state, action: PayloadAction<Product[]>) {
+      state.items = action.payload;
+    },
+  },
 });
 
-export const {} = productSlice.actions;
+export const { setProducts } = productSlice.actions;
 
 export default productSlice.reducer;

@@ -17,7 +17,7 @@ interface CardHeaderActionsProps {
 export default function ProductCardHeaderActions({
   product,
   isFavorite,
-  isAuthenticated,
+  // isAuthenticated,
   onToggleFavorite,
 }: CardHeaderActionsProps) {
   const [showQrModal, setShowQrModal] = useState(false);
@@ -70,7 +70,7 @@ export default function ProductCardHeaderActions({
           e.stopPropagation();
           onToggleFavorite();
         }}
-        disabled={!isAuthenticated}
+        // disabled={!isAuthenticated}
       >
         <Star
           className={cn(

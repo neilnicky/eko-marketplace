@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 // Types
 interface FavoriteItem {
@@ -75,9 +76,11 @@ export const useFavorites = (productId?: string, enabled: boolean = true) => {
   });
 
   // Get favorite status for specific product
-  const isFavorite = productId
-    ? favoritesQuery.data?.includes(productId) ?? false
-    : false;
+  const isFavorite = useMemo(() => {
+    return productId
+      ? favoritesQuery.data?.includes(productId) ?? false
+      : false;
+  }, [favoritesQuery.data, productId]);
 
   return {
     addFavorite: addFavoriteMutation,
