@@ -1,7 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface CartItem {
+  quantity: number;
+  price: number;
+}
+
 interface CartState {
-  items: Record<string, number>;
+  items: Record<string, CartItem>;
   totalItems: number;
   totalPrice: number;
 }
@@ -25,29 +30,33 @@ const cartSlice = createSlice({
       }>
     ) => {
       const { productId, quantity, price } = action.payload;
-      state.items[productId] = (state.items[productId] || 0) + quantity;
+      const item = state.items[productId];
+
+      if (item) {
+        item.quantity += quantity;
+      } else {
+        state.items[productId] = { quantity, price };
+      }
+
       state.totalItems += quantity;
       state.totalPrice += price * quantity;
     },
     removeFromCart: (
       state,
-      action: PayloadAction<{
-        productId: string;
-        quantity: number;
-        price: number;
-      }>
+      action: PayloadAction<{ productId: string; quantity: number }>
     ) => {
-      const { productId, quantity, price } = action.payload;
-      const currentQuantity = state.items[productId] || 0;
-      const removeQuantity = Math.min(quantity, currentQuantity);
+      const { productId, quantity } = action.payload;
+      const item = state.items[productId];
 
-      if (removeQuantity > 0) {
-        state.items[productId] = currentQuantity - removeQuantity;
-        if (state.items[productId] <= 0) {
-          delete state.items[productId];
-        }
-        state.totalItems -= removeQuantity;
-        state.totalPrice -= price * removeQuantity;
+      if (!item) return;
+
+      const removeQty = Math.min(quantity, item.quantity);
+      item.quantity -= removeQty;
+      state.totalItems -= removeQty;
+      state.totalPrice -= item.price * removeQty;
+
+      if (item.quantity <= 0) {
+        delete state.items[productId];
       }
     },
     clearCart: (state) => {
@@ -55,9 +64,22 @@ const cartSlice = createSlice({
       state.totalItems = 0;
       state.totalPrice = 0;
     },
+    // setCartFromDB: (state, action: PayloadAction<Record<string, CartItem>>) => {
+    //   state.items = action.payload;
+
+    //   // Recalculate totals
+    //   let totalItems = 0;
+    //   let totalPrice = 0;
+    //   for (const item of Object.values(action.payload)) {
+    //     totalItems += item.quantity;
+    //     totalPrice += item.quantity * item.price;
+    //   }
+
+    //   state.totalItems = totalItems;
+    //   state.totalPrice = totalPrice;
+    // },
   },
 });
 
 export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
-
 export default cartSlice.reducer;
