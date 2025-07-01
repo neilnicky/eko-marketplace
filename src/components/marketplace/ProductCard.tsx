@@ -4,20 +4,18 @@ import { useFavorites } from "@/hooks/useFavorites";
 import { toggleFavorite } from "@/store/slices/favorites";
 import { RootState } from "@/store/store";
 import { Product } from "@/types/product";
+import CartControls from "../cart/CartControls";
 import { Card, CardContent } from "../ui/card";
-import CartControls from "./CartControls";
 import ProductCardHeaderActions from "./ProductCardHeaderActions";
 import ProductCardImage from "./ProductCardImage";
 import ProductInfo from "./ProductCardInfo";
 import ProductPriceDisplay from "./ProductCardPrice";
-import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { toast } = useToast();
   const dispatch = useAppDispatch();
   const cartQuantity = useAppSelector(
     (state: RootState) => state.cart.items[product.id]?.quantity || 0
@@ -46,37 +44,9 @@ export default function ProductCard({ product }: ProductCardProps) {
     if (isAuthenticated) {
       // Sync with database using the mutations from useFavorites
       if (isFavorite) {
-        removeFavorite.mutate(product.id, {
-          onError: (error) => {
-            dispatch(toggleFavorite(product.id)); // rollback
-            toast({
-              title: "Error",
-              description: error.message,
-              variant: "destructive",
-            });
-          },
-          onSuccess: () => {
-            toast({
-              title: "Removed from favorites",
-            });
-          },
-        });
+        removeFavorite.mutate(product.id);
       } else {
-        addFavorite.mutate(product.id, {
-          onError: (error) => {
-            dispatch(toggleFavorite(product.id)); // rollback
-            toast({
-              title: "Error",
-              description: error.message,
-              variant: "destructive",
-            });
-          },
-          onSuccess: () => {
-            toast({
-              title: "Added to favorites",
-            });
-          },
-        });
+        addFavorite.mutate(product.id);
       }
     }
   };

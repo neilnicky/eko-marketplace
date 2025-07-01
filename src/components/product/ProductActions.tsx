@@ -1,5 +1,5 @@
 import QrModal from "@/components/marketplace/QRModal";
-import CartControls from "@/components/marketplace/CartControls";
+import CartControls from "@/components/cart/CartControls";
 import ShareOptions from "@/components/marketplace/ShareOptions";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
