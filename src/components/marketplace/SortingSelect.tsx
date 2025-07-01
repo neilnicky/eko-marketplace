@@ -1,29 +1,54 @@
-import React, { useState } from "react";
+"use client";
+
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { useUserLocation } from "@/hooks/useUserLocation";
+} from "@/components/ui/select";
+import {
+  selectHasLocation,
+  selectSorting,
+  setSorting,
+} from "@/store/slices/filters";
+
+const sortingOptions = [
+  { value: "newest", label: "Newest" },
+  { value: "price_asc", label: "Lowest Price" },
+  { value: "price_desc", label: "Highest Price" },
+  { value: "best_rated", label: "Best Rated" },
+  { value: "name_asc", label: "A-Z" },
+  { value: "name_desc", label: "Z-A" },
+];
 
 export default function SortingSelect() {
-  const [sorting, setSorting] = useState("newest");
-  const { location } = useUserLocation();
+  const dispatch = useAppDispatch();
+  const currentSorting = useAppSelector(selectSorting);
+  const hasLocation = useAppSelector(selectHasLocation);
+
+  const handleSortingChange = (value: string) => {
+    dispatch(setSorting(value));
+  };
+
+  const availableOptions = [
+    ...sortingOptions,
+    ...(hasLocation ? [{ value: "closest", label: "Closest" }] : []),
+  ];
 
   return (
     <div className="px-2 sm:px-4">
-      <Select value={sorting} onValueChange={setSorting}>
+      <Select value={currentSorting} onValueChange={handleSortingChange}>
         <SelectTrigger className="w-full md:w-48 text-xs">
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="newest">Newest</SelectItem>
-          <SelectItem value="price_asc">Lowest Price</SelectItem>
-          <SelectItem value="price_desc">Highest Price</SelectItem>
-          <SelectItem value="best_rated">Best Rated</SelectItem>
-          {location?.city && <SelectItem value="closest">Closest</SelectItem>}
+          {availableOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>
