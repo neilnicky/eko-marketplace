@@ -1,16 +1,15 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { addToCart, removeFromCart } from "@/store/slices/cart";
+import { useCartQuantityHandler } from "@/hooks/useCartQuantityHandler";
+import { useFavorites } from "@/hooks/useFavorites";
 import { toggleFavorite } from "@/store/slices/favorites";
 import { RootState } from "@/store/store";
 import { Product } from "@/types/product";
-import React from "react";
 import { Card, CardContent } from "../ui/card";
+import CartControls from "./CartControls";
 import ProductCardHeaderActions from "./ProductCardHeaderActions";
 import ProductCardImage from "./ProductCardImage";
 import ProductInfo from "./ProductInfo";
 import ProductPriceDisplay from "./ProductPriceDisplay";
-import CartControls from "./CartControls";
-import { useFavorites } from "@/hooks/useFavorites";
 
 interface ProductCardProps {
   product: Product;
@@ -36,27 +35,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const displayFavoriteStatus = isAuthenticated ? isFavorite : isReduxFavorite;
 
-  const handleQuantityChange = (change: number) => {
-    if (change > 0) {
-      if (product.stock !== undefined && cartQuantity >= product.stock) {
-        return;
-      }
-      dispatch(
-        addToCart({
-          productId: product.id,
-          quantity: change,
-          price: product.price,
-        })
-      );
-    } else {
-      dispatch(
-        removeFromCart({
-          productId: product.id,
-          quantity: Math.abs(change),
-        })
-      );
-    }
-  };
+  const handleQuantityChange = useCartQuantityHandler(product, cartQuantity);
 
   const handleToggleFavorite = () => {
     // Update Redux state immediately for better UX
