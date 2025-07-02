@@ -1,4 +1,4 @@
-import { Badge } from "lucide-react";
+import { Badge } from "../ui/badge";
 
 export default function ProductTags({ tags }: { tags: string[] }) {
   if (!tags?.length) return null;
