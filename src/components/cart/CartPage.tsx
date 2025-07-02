@@ -1,20 +1,16 @@
 "use client";
 
 import { useAppSelector } from "@/hooks/reduxHooks";
+import { useProducts } from "@/hooks/useProducts";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import CartItem from "./CartItem";
-import { useProducts } from "@/hooks/useProducts";
+import CartItems from "./CartItems";
 import CartSummary from "./CartSummary";
 
 export default function CartPage() {
-  const { items, totalItems, totalPrice } = useAppSelector(
-    (state) => state.cart
-  );
   const { data: products } = useProducts();
+  const { items, totalPrice } = useAppSelector((state) => state.cart);
   const cartItemsCount = Object.keys(items).length;
 
   return (
@@ -35,24 +31,13 @@ export default function CartPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Cart Items ({cartItemsCount})</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {Object.entries(items).map(([productId, items]) => (
-                  <CartItem
-                    key={productId}
-                    items={items}
-                    product={products![productId]}
-                  />
-                ))}
-              </CardContent>
-            </Card>
-          </div>
+          <CartItems
+            cartItemsCount={cartItemsCount}
+            items={items}
+            products={products}
+          />
 
-          <CartSummary />
+          <CartSummary total={totalPrice} />
         </div>
       )}
     </div>

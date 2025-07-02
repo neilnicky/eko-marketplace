@@ -12,7 +12,7 @@ import { Button, buttonVariants } from "../ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export default function CartSummary() {
+export default function CartSummary({ total }) {
   return (
     <div>
       <Card className="sticky top-24">
@@ -107,7 +107,7 @@ export default function CartSummary() {
 
           <div className="flex justify-between font-bold text-lg border-t pt-4">
             <span>Total</span>
-            {/* <span>R$ {total.toFixed(2)}</span> */}
+            <span>R$ {total.toFixed(2)}</span>
           </div>
 
           {/* {user && cartItemsCount > 0 && (
