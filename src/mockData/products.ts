@@ -9,7 +9,7 @@ export const mockProducts = [
     image_urls: [
       "https://images.pexels.com/photos/2966150/pexels-photo-2966150.jpeg",
     ],
-    description: "Fresh organic apples from local farms",
+    description: "Fresh organic apples from local farmsss",
     category: "processed",
     tags: ["organic", "fresh", "local"],
   },
@@ -41,6 +41,37 @@ export const mockProducts = [
     category: "fresh",
     tags: ["free-range", "protein", "organic"],
   },
+  {
+    id: "4",
+    name: "Almond Milk",
+    price: 5.25,
+    stock: 20,
+    available: true,
+    measurement_unit: "litre",
+    image_urls: [
+      "https://images.pexels.com/photos/3658482/pexels-photo-3658482.jpeg",
+    ],
+    description: "Unsweetened almond milk, lactose-free and vegan",
+    category: "inputs",
+    tags: ["vegan", "dairy-free", "healthy"],
+  },
+  {
+    id: "5",
+    name: "Tomatoes",
+    price: 2.99,
+    stock: 25,
+    available: true,
+    measurement_unit: "kg",
+    image_urls: [
+      "https://images.pexels.com/photos/673673/pexels-photo-673673.jpeg",
+    ],
+    description: "Juicy red tomatoes perfect for cooking and salads",
+    category: "fresh",
+    tags: ["fresh", "local", "seasonal"],
+  },
+];
+
+export const mockFavorites = [
   {
     id: "4",
     name: "Almond Milk",

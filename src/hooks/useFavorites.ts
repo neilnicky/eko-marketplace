@@ -1,13 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAppSelector } from "./reduxHooks";
+import { mockFavorites } from "@/mockData/products";
+import { Product } from "@/types/product";
 
 export const useFavorites = () => {
-  const isAuthenticated = useAppSelector((state) => state.auth.isLoggedIn);
+  const isAuthenticated =
+    useAppSelector((state) => state.auth.isLoggedIn) ?? true;
   const queryClient = useQueryClient();
 
   const favoritesQuery = useQuery({
     queryKey: ["favorites"],
-    enabled: isAuthenticated, 
+    enabled: isAuthenticated,
     queryFn: fetchUserFavorites,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
@@ -15,10 +18,7 @@ export const useFavorites = () => {
 
   const toggleFavorite = useMutation({
     mutationFn: toggleFavoriteInDb,
-    onMutate: async ({
-      productId,
-      action,
-    }) => {
+    onMutate: async ({ productId, action }) => {
       await queryClient.cancelQueries({ queryKey: ["favorites"] });
 
       const prev = queryClient.getQueryData<string[]>(["favorites"]);
@@ -55,11 +55,9 @@ export const useFavorites = () => {
   };
 };
 
-async function fetchUserFavorites(): Promise<string[]> {
-  const res = await fetch("/api/favorites");
-  if (!res.ok) throw new Error("Failed to fetch favorites");
-  const data = await res.json();
-  return data.map((f: any) => f.productId);
+async function fetchUserFavorites(): Promise<Product[]> {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  return mockFavorites;
 }
 
 async function toggleFavoriteInDb({
