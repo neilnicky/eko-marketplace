@@ -1,12 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAppSelector } from "./reduxHooks";
 
-export const useFavorites = (enabled: boolean = true) => {
+export const useFavorites = () => {
+  const isAuthenticated = useAppSelector((state) => state.auth.isLoggedIn);
   const queryClient = useQueryClient();
 
   const favoritesQuery = useQuery({
     queryKey: ["favorites"],
+    enabled: isAuthenticated, 
     queryFn: fetchUserFavorites,
-    enabled,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
@@ -16,9 +18,6 @@ export const useFavorites = (enabled: boolean = true) => {
     onMutate: async ({
       productId,
       action,
-    }: {
-      productId: string;
-      action: "add" | "remove";
     }) => {
       await queryClient.cancelQueries({ queryKey: ["favorites"] });
 
@@ -56,7 +55,6 @@ export const useFavorites = (enabled: boolean = true) => {
   };
 };
 
-
 async function fetchUserFavorites(): Promise<string[]> {
   const res = await fetch("/api/favorites");
   if (!res.ok) throw new Error("Failed to fetch favorites");
@@ -71,7 +69,8 @@ async function toggleFavoriteInDb({
   productId: string;
   action: "add" | "remove";
 }) {
-  const url = action === "add" ? "/api/favorites" : `/api/favorites/${productId}`;
+  const url =
+    action === "add" ? "/api/favorites" : `/api/favorites/${productId}`;
   const method = action === "add" ? "POST" : "DELETE";
 
   const res = await fetch(url, {

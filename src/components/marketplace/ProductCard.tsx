@@ -37,19 +37,17 @@ export default function ProductCard({
   const handleQuantityChange = useCartQuantityHandler(product, cartQuantity);
 
   const handleToggleFavorite = () => {
-    // For non-authenticated users, only update Redux
     if (!isAuthenticated) {
       dispatch(toggleFavoriteRedux(product.id));
       return;
     }
 
-    // For authenticated users: optimistic Redux update + server sync
     dispatch(toggleFavoriteRedux(product.id));
     onToggleFavorite();
   };
 
   return (
-    <Card className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full group relative cursor-pointer">
+    <Card className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full group relative cursor-pointer pt-0">
       <ProductCardHeaderActions
         product={product}
         isAuthenticated={isAuthenticated}

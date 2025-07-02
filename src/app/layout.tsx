@@ -21,7 +21,7 @@ export default function RootLayout({
         <QueryClientProvider client={queryClient}>
           <StoreProvider>
             <AppHeader />
-            <div className="mt-14">{children}</div>
+            <div className="my-16 max-w-7xl mx-auto">{children}</div>
             <BottomNavBar />
             <CreateFab />
           </StoreProvider>

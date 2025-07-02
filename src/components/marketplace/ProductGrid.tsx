@@ -11,7 +11,7 @@ export default function ProductGrid() {
   const isAuthenticated = useAppSelector(
     (state: RootState) => state.auth.isLoggedIn
   );
-  const { isFavorite, toggleFavorite, isToggling } = useFavorites(isAuthenticated);
+  const { isFavorite, toggleFavorite, isToggling } = useFavorites();
 
   if (isLoading) return <div>Loading products...</div>;
   if (error) return <div>Error loading products</div>;
