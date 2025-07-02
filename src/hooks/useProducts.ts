@@ -3,8 +3,6 @@ import { Product } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
 
 export const useProducts = () => {
-  // const dispatch = useAppDispatch();
-  // need to populate redux with products onsucess
 
   return useQuery({
     queryKey: ["products"],
