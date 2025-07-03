@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import AppHeader from "@/components/common/AppHeader";
 import "./globals.css";
@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`antialiased bg-background`}>
+      <body className="antialiased bg-background">
         <QueryClientProvider client={queryClient}>
           <StoreProvider>
             <AppHeader />

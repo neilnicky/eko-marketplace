@@ -38,9 +38,9 @@ export default function SortingSelect() {
   ];
 
   return (
-    <div className="px-2 sm:px-4">
+    <div className="px-2 sm:px-4 ">
       <Select value={currentSorting} onValueChange={handleSortingChange}>
-        <SelectTrigger className="w-full md:w-48 text-xs">
+        <SelectTrigger className="w-44 text-xs">
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
         <SelectContent>
