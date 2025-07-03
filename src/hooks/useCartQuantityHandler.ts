@@ -2,6 +2,7 @@ import { Product } from "@/types/product";
 import { useAppDispatch } from "./reduxHooks";
 import { addToCart, removeFromCart } from "@/store/slices/cart";
 import { useRemoveCartItem, useUpdateCartItem } from "./useUpdateDbCart";
+import { toast } from "sonner";
 
 export function useCartQuantityHandler(product: Product, cartQuantity: number) {
   const dispatch = useAppDispatch();
@@ -21,6 +22,7 @@ export function useCartQuantityHandler(product: Product, cartQuantity: number) {
           price: product.price,
         })
       );
+      toast("Added to cart!");
       // ✅ DB
       updateCart.mutate({
         productId: product.id,
@@ -34,6 +36,7 @@ export function useCartQuantityHandler(product: Product, cartQuantity: number) {
           quantity: Math.abs(change),
         })
       );
+      toast("Removed from cart!");
       if (cartQuantity + change <= 0) {
         // Quantity becomes 0 or less → remove from DB
         removeCart.mutate({ productId: product.id });
