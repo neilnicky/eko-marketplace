@@ -1,15 +1,13 @@
 import { mockProducts } from "@/mockData/products";
 import { Product } from "@/types/product";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useProducts = () => {
-
   return useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
-    
   });
 };
 
@@ -20,6 +18,18 @@ export const useProduct = (productId: string) => {
     enabled: !!productId,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
+  });
+};
+
+export const useCreateProduct = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createProduct,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      // queryClient.invalidateQueries({ queryKey: ["userProjects"] });
+    },
   });
 };
 
@@ -41,4 +51,10 @@ const fetchProduct = async (productId: string): Promise<Product> => {
   }
 
   return product;
+};
+
+const createProduct = async (productData): Promise<Product> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return productData;
 };
