@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,7 +12,11 @@ import { Button, buttonVariants } from "../ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export default function CartSummary({ total }) {
+export default function CartSummary({ totalPrice, cartItemsCount }) {
+  const [zipCode, setZipCode] = useState("");
+  const totalShipping = 10 as number;
+  const discountAmount = 0;
+  const total = Math.max(0, totalPrice + totalShipping - discountAmount);
   return (
     <div>
       <Card className="sticky top-24">
@@ -26,14 +30,14 @@ export default function CartSummary({ total }) {
             <Input
               id="zipcode"
               placeholder="00000-000"
-              //   value={zipCode}
-              //   onChange={(e) => {
-              //     const value = e.target.value.replace(/\D/g, "");
-              //     const formattedZip = value
-              //       .replace(/(\d{5})(\d)/, "$1-$2")
-              //       .slice(0, 9);
-              //     setZipCode(formattedZip);
-              //   }}
+              value={zipCode}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                const formattedZip = value
+                  .replace(/(\d{5})(\d)/, "$1-$2")
+                  .slice(0, 9);
+                setZipCode(formattedZip);
+              }}
               className="text-sm"
             />
             {/* {locationInfo && (
@@ -44,19 +48,19 @@ export default function CartSummary({ total }) {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Subtotal</span>
-              {/* <span>R$ {subtotal.toFixed(2)}</span> */}
+              <span>R$ {totalPrice.toFixed(2)}</span>
             </div>
 
-            {/* {cartItemsCount > 0 && (
+            {cartItemsCount > 0 && (
               <div className="flex justify-between text-sm">
                 <span>Shipping</span>
-                <span className={totalShipping === 0 ? "text-green-600" : ""}>
+                <span className={cn({ "text-green-600": totalShipping === 0 })}>
                   {totalShipping === 0
                     ? "Free"
                     : `R$ ${totalShipping.toFixed(2)}`}
                 </span>
               </div>
-            )} */}
+            )}
 
             {/* {appliedCoupon && (
               <div className="flex justify-between text-sm text-green-600">

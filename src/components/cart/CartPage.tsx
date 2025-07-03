@@ -34,7 +34,7 @@ export default function CartPage() {
             items={items}
           />
 
-          <CartSummary total={totalPrice} />
+          <CartSummary totalPrice={totalPrice} cartItemsCount={cartItemsCount}/>
         </div>
       )}
     </div>
