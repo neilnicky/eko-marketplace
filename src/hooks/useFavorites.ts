@@ -1,16 +1,14 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useAppSelector } from "./reduxHooks";
 import { mockFavorites } from "@/mockData/products";
 import { Product } from "@/types/product";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useFavorites = () => {
-  const isAuthenticated =
-    useAppSelector((state) => state.auth.isLoggedIn) ?? true;
+  // const isAuthenticated = useAppSelector((state) => state.auth.isLoggedIn);
   const queryClient = useQueryClient();
 
   const favoritesQuery = useQuery({
     queryKey: ["favorites"],
-    enabled: isAuthenticated,
+    enabled: true, //should run only if isAuthenticated 
     queryFn: fetchUserFavorites,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
@@ -18,15 +16,17 @@ export const useFavorites = () => {
 
   const toggleFavorite = useMutation({
     mutationFn: toggleFavoriteInDb,
-    onMutate: async ({ productId, action }) => {
+    onMutate: async ({ product, action }) => {
       await queryClient.cancelQueries({ queryKey: ["favorites"] });
 
-      const prev = queryClient.getQueryData<string[]>(["favorites"]);
-      queryClient.setQueryData<string[]>(["favorites"], (old = []) => {
+
+      const prev = queryClient.getQueryData<Product[]>(["favorites"]);
+
+      queryClient.setQueryData<Product[]>(["favorites"], (old = []) => {
         if (action === "add") {
-          return old.includes(productId) ? old : [...old, productId];
+          return old.find((p) => p.id === product.id) ? old : [...old, product];
         }
-        return old.filter((id) => id !== productId);
+        return old.filter((p) => p.id !== product.id);
       });
 
       return { prev };
@@ -43,7 +43,7 @@ export const useFavorites = () => {
   });
 
   const isFavorite = (productId: string): boolean =>
-    favoritesQuery.data?.includes(productId) ?? false;
+    favoritesQuery.data?.some((p) => p.id === productId) ?? false;
 
   return {
     isFavorite,
@@ -61,20 +61,22 @@ async function fetchUserFavorites(): Promise<Product[]> {
 }
 
 async function toggleFavoriteInDb({
-  productId,
+  product,
   action,
 }: {
-  productId: string;
+  product: Product;
   action: "add" | "remove";
 }) {
   const url =
-    action === "add" ? "/api/favorites" : `/api/favorites/${productId}`;
+    action === "add" ? "/api/favorites" : `/api/favorites/${product.id}`;
   const method = action === "add" ? "POST" : "DELETE";
 
   const res = await fetch(url, {
     method,
     headers: { "Content-Type": "application/json" },
-    ...(action === "add" && { body: JSON.stringify({ productId }) }),
+    ...(action === "add" && {
+      body: JSON.stringify({ productId: product.id }),
+    }),
   });
 
   if (!res.ok) throw new Error(`Failed to ${action} favorite`);
