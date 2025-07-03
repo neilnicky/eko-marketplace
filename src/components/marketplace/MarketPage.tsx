@@ -4,6 +4,7 @@ import MarketplaceHeader from "./MarketplaceHeader";
 import ProductGrid from "./ProductGrid";
 import SetLocation from "./SetLocation";
 import SortingSelect from "./SortingSelect";
+import CartFooter from "../cart/CartFooter";
 
 export default function MarketPage() {
   return (
@@ -19,7 +20,7 @@ export default function MarketPage() {
           <ProductGrid />
         </div>
 
-        {/* <CartFooter /> */}
+        <CartFooter />
       </div>
     </>
   );
