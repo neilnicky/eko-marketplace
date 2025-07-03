@@ -1,7 +1,6 @@
 "use client";
 
 import { useAppSelector } from "@/hooks/reduxHooks";
-import { useProducts } from "@/hooks/useProducts";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -9,7 +8,6 @@ import CartItems from "./CartItems";
 import CartSummary from "./CartSummary";
 
 export default function CartPage() {
-  const { data: products } = useProducts();
   const { items, totalPrice } = useAppSelector((state) => state.cart);
   const cartItemsCount = Object.keys(items).length;
 
@@ -34,7 +32,6 @@ export default function CartPage() {
           <CartItems
             cartItemsCount={cartItemsCount}
             items={items}
-            products={products}
           />
 
           <CartSummary total={totalPrice} />

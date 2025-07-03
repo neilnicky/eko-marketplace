@@ -1,16 +1,57 @@
-import { CartItem as CartItemType } from "@/store/slices/cart";
-import { Product } from "@/types/product";
+import {
+  addToCart,
+  CartItem as CartItemType,
+  removeFromCart,
+} from "@/store/slices/cart";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { useAppDispatch } from "@/hooks/reduxHooks";
+import { Product } from "@/types/product";
 
 interface CartItemProps {
+  productId: string;
+  cartItem: CartItemType;
   product: Product;
-  items: CartItemType;
 }
 
-export default function CartItem({ product, items }: CartItemProps) {
+export default function CartItem({
+  productId,
+  cartItem,
+  product,
+}: CartItemProps) {
+  const dispatch = useAppDispatch();
+
+  const handleQuantityChange = (change: number) => {
+    if (change > 0) {
+      
+      dispatch(
+        addToCart({
+          productId,
+          quantity: change,
+          price: product.price,
+        })
+      );
+    } else {
+      dispatch(
+        removeFromCart({
+          productId,
+          quantity: Math.abs(change),
+        })
+      );
+    }
+  };
+
+  const handleRemove = () => {
+    dispatch(
+      removeFromCart({
+        productId,
+        quantity: cartItem.quantity,
+      })
+    );
+  };
+
   return (
     <div className="flex items-center gap-4 py-4 border-b">
       <Image
@@ -34,20 +75,21 @@ export default function CartItem({ product, items }: CartItemProps) {
             size="icon"
             variant="outline"
             className="h-8 w-8"
-            // onClick={() => handleQuantityChange(-1)}
+            onClick={() => handleQuantityChange(-1)}
+            disabled={cartItem.quantity <= 1}
           >
             <Minus className="h-4 w-4" />
           </Button>
           <Input
             readOnly
-            value={items.quantity}
+            value={cartItem.quantity}
             className="w-12 h-8 text-center"
           />
           <Button
             size="icon"
             variant="outline"
             className="h-8 w-8"
-            // onClick={() => handleQuantityChange(-1)}
+            onClick={() => handleQuantityChange(1)}
           >
             <Plus className="h-4 w-4" />
           </Button>
@@ -55,13 +97,13 @@ export default function CartItem({ product, items }: CartItemProps) {
       </div>
       <div className="text-right">
         <p className="font-semibold">
-          R$ {(product.price * items.quantity).toFixed(2)}
+          R$ {(product.price * cartItem.quantity).toFixed(2)}
         </p>
         <Button
           variant="ghost"
           size="icon"
           className="text-muted-foreground hover:text-destructive"
-          // onClick={() => onRemove(item.id)}
+          onClick={handleRemove}
         >
           <Trash2 className="h-4 w-4" />
         </Button>
