@@ -1,3 +1,4 @@
+import { Toaster } from "sonner";
 import CategoryFilter from "./CategoryFilter";
 import MarketplaceHeader from "./MarketplaceHeader";
 import ProductGrid from "./ProductGrid";
@@ -7,7 +8,7 @@ import SortingSelect from "./SortingSelect";
 export default function MarketPage() {
   return (
     <>
-      {/*TODO: <Toaster /> */}
+      <Toaster />
       <div className="max-w-7xl mx-auto p-4">
         <MarketplaceHeader />
 
@@ -19,7 +20,6 @@ export default function MarketPage() {
         </div>
 
         {/* <CartFooter /> */}
-
       </div>
     </>
   );

@@ -1,7 +1,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Copy, QrCode } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface ShareOptionsProps {
   url: string;
@@ -30,13 +30,11 @@ export default function ShareOptions({
   onQrCodeClick,
   trigger,
 }: ShareOptionsProps) {
-  const { toast } = useToast();
-
   const handleCopyLink = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigator.clipboard.writeText(url);
-    toast({
-      title: "Link Copied!",
+
+    toast("Link Copied!", {
       description: "The product link has been copied to your clipboard.",
     });
   };
