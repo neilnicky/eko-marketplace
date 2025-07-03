@@ -34,7 +34,7 @@ export default function ProductCard({
   );
   const displayFavoriteStatus = isAuthenticated ? isFavorite : isReduxFavorite;
 
-  const handleQuantityChange = useCartQuantityHandler(product, cartQuantity);
+  const {handleQuantityChange} = useCartQuantityHandler(product, cartQuantity);
 
   const handleToggleFavorite = () => {
     if (!isAuthenticated) {

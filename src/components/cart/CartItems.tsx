@@ -61,7 +61,7 @@ export default function CartItems({ cartItemsCount, items }: CartItemsProps) {
             return (
               <CartItem
                 key={`cart-item-key-${productId}`}
-                productId={productId}
+                // productId={productId}
                 cartItem={cartItem}
                 product={product}
               />

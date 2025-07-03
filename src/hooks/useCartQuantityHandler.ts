@@ -48,5 +48,17 @@ export function useCartQuantityHandler(product: Product, cartQuantity: number) {
     }
   };
 
-  return handleQuantityChange;
+  const handleRemove = () => {
+    // Remove from Redux
+    dispatch(
+      removeFromCart({
+        productId: product.id,
+        quantity: cartQuantity,
+      })
+    );
+    // Remove from DB
+    removeCart.mutate({ productId: product.id });
+  };
+
+  return { handleQuantityChange, handleRemove };
 }

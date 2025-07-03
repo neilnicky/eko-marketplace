@@ -1,56 +1,21 @@
-import {
-  addToCart,
-  CartItem as CartItemType,
-  removeFromCart,
-} from "@/store/slices/cart";
+import { useCartQuantityHandler } from "@/hooks/useCartQuantityHandler";
+import { CartItem as CartItemType } from "@/store/slices/cart";
+import { Product } from "@/types/product"; // Use your existing Product type
 import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { useAppDispatch } from "@/hooks/reduxHooks";
-import { Product } from "@/types/product";
 
 interface CartItemProps {
-  productId: string;
   cartItem: CartItemType;
   product: Product;
 }
 
-export default function CartItem({
-  productId,
-  cartItem,
-  product,
-}: CartItemProps) {
-  const dispatch = useAppDispatch();
-
-  const handleQuantityChange = (change: number) => {
-    if (change > 0) {
-      
-      dispatch(
-        addToCart({
-          productId,
-          quantity: change,
-          price: product.price,
-        })
-      );
-    } else {
-      dispatch(
-        removeFromCart({
-          productId,
-          quantity: Math.abs(change),
-        })
-      );
-    }
-  };
-
-  const handleRemove = () => {
-    dispatch(
-      removeFromCart({
-        productId,
-        quantity: cartItem.quantity,
-      })
-    );
-  };
+export default function CartItem({ cartItem, product }: CartItemProps) {
+  const { handleQuantityChange, handleRemove } = useCartQuantityHandler(
+    product,
+    cartItem.quantity
+  );
 
   return (
     <div className="flex items-center gap-4 py-4 border-b">

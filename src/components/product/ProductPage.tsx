@@ -21,7 +21,10 @@ export default function ProductPage() {
   const cartQuantity = useAppSelector(
     (state: RootState) => state.cart.items[product?.id]?.quantity || 0
   );
-  const handleQuantityChange = useCartQuantityHandler(product!, cartQuantity);
+  const { handleQuantityChange } = useCartQuantityHandler(
+    product!,
+    cartQuantity
+  );
 
   if (isLoading) {
     return <div>Loading product...</div>;
