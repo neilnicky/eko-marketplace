@@ -10,7 +10,7 @@ export default function ProductProjectInfo({ product }: { product: any }) {
       <h3 className="font-semibold mb-2">From Project</h3>
       {product ? (
         <Link
-          href={`ProjectProfile?id=${product.id}`}
+          href={`project-profile?id=${product.id}`}
           className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50"
         >
           <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">

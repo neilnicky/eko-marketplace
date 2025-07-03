@@ -1,4 +1,6 @@
-export const mockProducts = [
+import { Product } from "@/types/product";
+
+export const mockProducts: Product[] = [
   {
     id: "1",
     name: "Fresh Organic Apples",
@@ -12,6 +14,7 @@ export const mockProducts = [
     description: "Fresh organic apples from local farmsss",
     category: "processed",
     tags: ["organic", "fresh", "local"],
+    project_id: "proj101",
   },
   {
     id: "2",
@@ -26,6 +29,7 @@ export const mockProducts = [
     description: "Freshly baked whole wheat bread with no preservatives",
     category: "fresh",
     tags: ["whole wheat", "fresh", "healthy"],
+    project_id: "334234",
   },
   {
     id: "3",
@@ -40,6 +44,7 @@ export const mockProducts = [
     description: "Farm fresh free-range eggs",
     category: "fresh",
     tags: ["free-range", "protein", "organic"],
+    project_id: "j",
   },
   {
     id: "4",
@@ -54,6 +59,7 @@ export const mockProducts = [
     description: "Unsweetened almond milk, lactose-free and vegan",
     category: "inputs",
     tags: ["vegan", "dairy-free", "healthy"],
+    project_id: "1",
   },
   {
     id: "5",
@@ -68,6 +74,7 @@ export const mockProducts = [
     description: "Juicy red tomatoes perfect for cooking and salads",
     category: "fresh",
     tags: ["fresh", "local", "seasonal"],
+    project_id: "p",
   },
 ];
 
