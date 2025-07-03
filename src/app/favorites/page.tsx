@@ -68,7 +68,7 @@ export default function FavoritesPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {favoriteProducts?.map((product) => (
-                <Card key={product.id} className="overflow-hidden">
+                <Card key={product.id} className="overflow-hidden pt-0">
                   <div className="aspect-square bg-gray-100 relative">
                     {product.image_urls?.[0] ? (
                       <Image
@@ -89,7 +89,7 @@ export default function FavoritesPage() {
                       className="absolute top-2 right-2 bg-white/80 hover:bg-white/90"
                       onClick={() => {
                         toggleFavorite.mutate({
-                          productId: product.id,
+                          product: product,
                           action: "remove",
                         });
                       }}
@@ -112,7 +112,12 @@ export default function FavoritesPage() {
                         </Badge>
                       )}
                     </div>
-                    <Button className="w-full">View Product</Button>
+                    <Link
+                      href={`product/${product.id}`}
+                      className={cn(buttonVariants(), "w-full")}
+                    >
+                      View Product
+                    </Link>
                   </CardContent>
                 </Card>
               ))}

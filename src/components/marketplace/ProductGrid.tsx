@@ -24,10 +24,10 @@ export default function ProductGrid() {
           product={product}
           isAuthenticated={isAuthenticated}
           isFavorite={isFavorite(product.id)}
-          isToggling={isToggling} 
+          isToggling={isToggling}
           onToggleFavorite={() => {
             const action = isFavorite(product.id) ? "remove" : "add";
-            toggleFavorite.mutate({ productId: product.id, action });
+            toggleFavorite.mutate({ product: product, action });
           }}
         />
       ))}
