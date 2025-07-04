@@ -10,7 +10,6 @@ import { useAppSelector } from "@/hooks/reduxHooks";
 import { useCartQuantityHandler } from "@/hooks/useCartQuantityHandler";
 import { useProduct } from "@/hooks/useProducts";
 import { cn } from "@/lib/utils";
-import { RootState } from "@/store/store";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -19,7 +18,7 @@ export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, error } = useProduct(id);
   const cartQuantity = useAppSelector(
-    (state: RootState) => state.cart.items[product?.id]?.quantity || 0
+    (state) => (product && state.cart.items[product?.id].quantity) || 0
   );
   const { handleQuantityChange } = useCartQuantityHandler(
     product!,

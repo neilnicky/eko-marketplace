@@ -1,13 +1,10 @@
 "use client";
 
 import { useAppSelector } from "@/hooks/reduxHooks";
-import { RootState } from "@/store/store";
 import Link from "next/link";
 
 export default function CartFooter() {
-  const { totalItems, totalPrice } = useAppSelector(
-    (state: RootState) => state.cart
-  );
+  const { totalItems, totalPrice } = useAppSelector((state) => state.cart);
   if (totalItems === 0) return null;
 
   return (

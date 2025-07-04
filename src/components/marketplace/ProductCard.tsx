@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { useCartQuantityHandler } from "@/hooks/useCartQuantityHandler";
 import { toggleFavoriteRedux } from "@/store/slices/favorites";
-import { RootState } from "@/store/store";
 import { Product } from "@/types/product";
 import CartControls from "../cart/CartControls";
 import { Card, CardContent } from "../ui/card";
@@ -27,14 +26,17 @@ export default function ProductCard({
 }: ProductCardProps) {
   const dispatch = useAppDispatch();
   const cartQuantity = useAppSelector(
-    (state: RootState) => state.cart.items[product.id]?.quantity || 0
+    (state) => state.cart.items[product.id]?.quantity || 0
   );
-  const isReduxFavorite = useAppSelector((state: RootState) =>
+  const isReduxFavorite = useAppSelector((state) =>
     state.favorites.items.includes(product.id)
   );
   const displayFavoriteStatus = isAuthenticated ? isFavorite : isReduxFavorite;
 
-  const {handleQuantityChange} = useCartQuantityHandler(product, cartQuantity);
+  const { handleQuantityChange } = useCartQuantityHandler(
+    product,
+    cartQuantity
+  );
 
   const handleToggleFavorite = () => {
     if (!isAuthenticated) {
