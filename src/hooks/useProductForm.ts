@@ -8,7 +8,7 @@ import {
   setAgreedToContact,
   setAgreedToTerms,
   setUnlimitedStock,
-} from "@/store/slices/product";
+} from "@/store/slices/productCreation";
 import { toast } from "sonner";
 import { productFormSchema } from "@/schemas/productFormSchema";
 

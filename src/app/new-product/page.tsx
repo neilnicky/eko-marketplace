@@ -24,7 +24,7 @@ import { categoryFilters } from "@/constants/categoryFilters";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { useProductForm } from "@/hooks/useProductForm";
 import { useUserProjects } from "@/hooks/useProject";
-import { resetProductState } from "@/store/slices/product";
+import { resetProductState } from "@/store/slices/productCreation";
 import { Info, Loader2, Mail, Phone, Save, ShieldCheck } from "lucide-react";
 import { useEffect } from "react";
 import { Controller } from "react-hook-form";
